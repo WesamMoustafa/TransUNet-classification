@@ -21,8 +21,8 @@ from torch.nn import (
 )
 from torch.nn.modules.utils import _pair
 
-from . import vit_configs as configs
-from .resnet_skip import ResNetV2
+import vit_configs as configs
+from resnet_skip import ResNetV2
 
 logger = logging.getLogger(__name__)
 

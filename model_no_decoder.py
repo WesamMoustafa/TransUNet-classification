@@ -21,8 +21,8 @@ from torch.nn.functional import gelu
 from torch.nn.init import normal_, xavier_uniform_
 from torch.nn.modules.utils import _pair
 
-from . import vit_configs as configs
-from .resnet_skip import ResNetV2
+import vit_configs as configs
+from resnet_skip import ResNetV2
 
 logger = logging.getLogger(__name__)
 
@@ -300,6 +300,7 @@ class Transformer(nn.Module):
 
 class ClassificationHead(nn.Module):
     def __init__(self, in_features, out_features):
+        super().__init__()
         self.fc1 = Linear(in_features, in_features // 4)
         self.fc2 = Linear(in_features // 4, in_features // 16)
         self.fc3 = Linear(in_features // 16, out_features)
@@ -312,7 +313,6 @@ class ClassificationHead(nn.Module):
         normal_(self.fc1.bias, std=1e-6)
         normal_(self.fc2.bias, std=1e-6)
         normal_(self.fc3.bias, std=1e-6)
-        super().__init__()
 
     def forward(self, x):
         x = torch.flatten(x, start_dim=1)  # (B, n_patch * hidden)
@@ -409,11 +409,13 @@ class VisionTransformer(nn.Module):
 
 
 CONFIGS = {
+    "ViT-S_16": configs.get_s16_config(),
     "ViT-B_16": configs.get_b16_config(),
     "ViT-B_32": configs.get_b32_config(),
     "ViT-L_16": configs.get_l16_config(),
     "ViT-L_32": configs.get_l32_config(),
     "ViT-H_14": configs.get_h14_config(),
+    "R50-ViT-S_16": configs.get_r50_s16_config(),
     "R50-ViT-B_16": configs.get_r50_b16_config(),
     "R50-ViT-L_16": configs.get_r50_l16_config(),
     "testing": configs.get_testing(),

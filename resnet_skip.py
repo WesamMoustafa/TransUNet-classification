@@ -145,7 +145,9 @@ class ResNetV2(nn.Module):
                                     (
                                         "unit1",
                                         PreActBottleneck(
-                                            cin=width, cout=width * 4, cmid=width
+                                            cin=width,
+                                            cout=width * 4,
+                                            cmid=width,
                                         ),
                                     )
                                 ]
@@ -153,7 +155,9 @@ class ResNetV2(nn.Module):
                                     (
                                         f"unit{i:d}",
                                         PreActBottleneck(
-                                            cin=width * 4, cout=width * 4, cmid=width
+                                            cin=width * 4,
+                                            cout=width * 4,
+                                            cmid=width,
                                         ),
                                     )
                                     for i in range(2, block_units[0] + 1)
