@@ -359,8 +359,8 @@ class DecoderBlock(nn.Module):
 
 class ClassificationHead(nn.Sequential):
     def __init__(self, in_features, out_features):
-        pool = AdaptiveAvgPool2d((1, 1))
-        flat = Flatten()
+        pool = AdaptiveAvgPool2d(output_size=1)  # (B, C, 1, 1)
+        flat = Flatten()  # (B, C)
         fc = Linear(in_features, out_features)
         super().__init__(pool, flat, fc)
 
@@ -438,8 +438,8 @@ class VisionTransformer(nn.Module):
         if x.size()[1] == 1:
             x = x.repeat(1, 3, 1, 1)
         x, attn_weights, features = self.transformer(x)  # (B, n_patch, hidden)
-        x = self.decoder(x, features)
-        logits = self.classification_head(x)
+        x = self.decoder(x, features)  #  (B, C, h, w)
+        logits = self.classification_head(x)  # (B, num_classes)
         return logits
 
     def load_from(self, weights):
@@ -476,7 +476,7 @@ class VisionTransformer(nn.Module):
                 if self.classifier == "seg":
                     _, posemb_grid = posemb[:, :1], posemb[0, 1:]
                 gs_old = int(np.sqrt(len(posemb_grid)))  # type: ignore
-                gs_new = int(np.sqrt(ntok_new))
+                gs_new = int(np.sqrt(ntok_new))  # type: ignore
                 print("load_pretrained: grid-size from %s to %s" % (gs_old, gs_new))  # type: ignore  # noqa: E501
                 posemb_grid = posemb_grid.reshape(gs_old, gs_old, -1)  # type: ignore
                 zoom = (gs_new / gs_old, gs_new / gs_old, 1)
