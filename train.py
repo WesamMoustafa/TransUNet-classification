@@ -85,9 +85,13 @@ model = TransUNetClassification(
     num_classes=10,
     small=args.small,  # type: ignore
 )
+# comment this if you do not want to use wandb
 logger = WandbLogger(project="TransUNet classification")
+
+
 trainer = l.Trainer(
-    logger=None,
+    logger=logger,  # to use wandb logger
+    # logger=True,   #  to use tensorboard logger
     max_epochs=30,
     enable_progress_bar=True,
     enable_checkpointing=False,
